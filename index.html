@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Landing Page interactiva de Venta de Lotes y Terrenos. Explora en el mapa interactivo, consulta superficies, precios y contacta directamente al dueño de cada lote.">
+  <title>Valdivia Lotes & Terrenos | Venta de Lotes Interactivas</title>
+
+  <!-- BOOTSTRAP 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- BOOTSTRAP ICONS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  
+  <!-- LEAFLET.JS (MAPAS INTERACTIVOS) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <!-- ESTILOS PERSONALIZADOS -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center gap-2" href="#">
+        <i class="bi bi-geo-fill text-warning"></i>
+        <span class="site-brand-name">Valdivia Lotes</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarMain">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
+          <li class="nav-item"><a class="nav-link active" href="#inicio">Inicio</a></li>
+          <li class="nav-item"><a class="nav-link" href="#seccion-mapa">Mapa Interactivo</a></li>
+          <li class="nav-item"><a class="nav-link" href="#seccion-lotes">Catálogo de Lotes</a></li>
+          <li class="nav-item"><a class="nav-link" href="#contacto-general">Contacto</a></li>
+          <li class="nav-item ms-lg-3 mt-2 mt-lg-0">
+            <a href="#seccion-mapa" class="btn btn-accent btn-sm">
+              <i class="bi bi-map-fill"></i> Explorar Mapa
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <header id="inicio" class="hero-section">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-lg-7">
+          <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold mb-3">
+            <i class="bi bi-stars"></i> Desarrollo Inmobiliario Exclusivo
+          </span>
+          <h1 class="hero-title site-brand-name">Valdivia Lotes & Terrenos</h1>
+          <p id="site-subtitle" class="hero-subtitle mb-4">
+            Encuentra el terreno perfecto para construir tu hogar o proyecto. Explora la ubicación en el mapa interactivo y contacta directamente al propietario de cada lote.
+          </p>
+
+          <div class="d-flex flex-wrap gap-3 mb-5">
+            <a href="#seccion-mapa" class="btn btn-accent btn-lg">
+              <i class="bi bi-geo-alt-fill"></i> Ver Mapa de Lotes
+            </a>
+            <a href="#seccion-lotes" class="btn btn-outline-light btn-lg">
+              <i class="bi bi-grid-3x3-gap-fill"></i> Ver Lista de Terrenos
+            </a>
+          </div>
+        </div>
+
+        <div class="col-lg-5">
+          <div class="row g-3">
+            <div class="col-6">
+              <div class="hero-stat-card">
+                <div class="stat-number" id="stat-total-lotes">0</div>
+                <small class="text-white-50 text-uppercase fw-semibold">Total Terrenos</small>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="hero-stat-card">
+                <div class="stat-number text-success" id="stat-disponibles">0</div>
+                <small class="text-white-50 text-uppercase fw-semibold">Disponibles</small>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="hero-stat-card">
+                <div class="stat-number text-warning" id="stat-reservados">0</div>
+                <small class="text-white-50 text-uppercase fw-semibold">Reservados</small>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="hero-stat-card">
+                <div class="stat-number text-info" style="color: #60a5fa !important;">100%</div>
+                <small class="text-white-50 text-uppercase fw-semibold">Escriturables</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="container py-5">
+
+    <!-- SECCIÓN MAPA INTERACTIVO -->
+    <section id="seccion-mapa" class="mb-5 pt-3">
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+        <div>
+          <span class="text-success fw-bold text-uppercase tracking-wider small">
+            <i class="bi bi-pin-map-fill"></i> Ubicación y Delimitación
+          </span>
+          <h2 class="h1 font-serif fw-bold text-success-emphasis">Mapa Interactivo de Lotes</h2>
+          <p class="text-muted">Haz clic en cualquier lote sobre el mapa satelital para ver superficie, costo y enviar consulta directa a su propietario.</p>
+        </div>
+
+        <!-- Leyenda del mapa -->
+        <div class="d-flex flex-wrap gap-2 mt-2 mt-md-0">
+          <span class="badge-lote badge-disponible"><i class="bi bi-circle-fill"></i> Disponible</span>
+          <span class="badge-lote badge-reservado"><i class="bi bi-circle-fill"></i> Reservado</span>
+          <span class="badge-lote badge-vendido"><i class="bi bi-circle-fill"></i> Vendido</span>
+        </div>
+      </div>
+
+      <!-- Contenedor del Mapa Leaflet -->
+      <div id="mapa-container"></div>
+    </section>
+
+    <!-- BARRA DE FILTROS Y BÚSQUEDA -->
+    <section id="seccion-lotes" class="pt-4 mb-4">
+      <div class="row align-items-center mb-4">
+        <div class="col-md-6">
+          <h2 class="h2 font-serif fw-bold">Catálogo de Terrenos</h2>
+          <p class="text-muted">Explora y filtra según tus necesidades</p>
+        </div>
+
+        <div class="col-md-6">
+          <div class="input-group">
+            <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
+            <input type="text" id="filter-search" class="form-control border-start-0 ps-0" placeholder="Buscar por número de lote, manzana o descripción...">
+          </div>
+        </div>
+      </div>
+
+      <div class="map-control-box mb-4">
+        <div class="row g-3 align-items-center">
+          <div class="col-md-4">
+            <label for="filter-estado" class="form-label small fw-bold text-muted mb-1">Estado de Disponibilidad:</label>
+            <select id="filter-estado" class="form-select">
+              <option value="todos">Todos los Estados</option>
+              <option value="disponible">Solo Disponibles</option>
+              <option value="reservado">Reservados</option>
+              <option value="vendido">Vendidos</option>
+            </select>
+          </div>
+
+          <div class="col-md-4">
+            <label for="filter-orden" class="form-label small fw-bold text-muted mb-1">Ordenar Por:</label>
+            <select id="filter-orden" class="form-select">
+              <option value="default">Por Defecto</option>
+              <option value="precio-asc">Precio: Menor a Mayor</option>
+              <option value="precio-desc">Precio: Mayor a Menor</option>
+              <option value="superficie-desc">Superficie: Mayor a Menor</option>
+            </select>
+          </div>
+
+          <div class="col-md-4 d-flex align-items-end">
+            <button class="btn btn-outline-secondary w-100" onclick="limpiarFiltros()">
+              <i class="bi bi-arrow-counterclockwise"></i> Limpiar Filtros
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CUADRÍCULA DE LOTES -->
+      <div class="row" id="lotes-container">
+        <!-- Renderizado dinámico desde app.js -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer id="contacto-general" class="footer-custom">
+    <div class="container">
+      <div class="row g-4 mb-4">
+        <div class="col-lg-5">
+          <div class="footer-brand mb-2 site-brand-name">Valdivia Lotes</div>
+          <p class="text-white-50 pe-lg-4">
+            Plataforma interactiva para la publicación y venta directa de lotes y terrenos urbanos y rurales.
+          </p>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+          <h5 class="text-white mb-3 font-serif">Navegación</h5>
+          <ul class="list-unstyled">
+            <li class="mb-2"><a href="#inicio" class="text-white-50 text-decoration-none">Inicio</a></li>
+            <li class="mb-2"><a href="#seccion-mapa" class="text-white-50 text-decoration-none">Mapa Interactivo</a></li>
+            <li class="mb-2"><a href="#seccion-lotes" class="text-white-50 text-decoration-none">Catálogo de Lotes</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+          <h5 class="text-white mb-3 font-serif">Contacto Administración</h5>
+          <p class="text-white-50 mb-2"><i class="bi bi-envelope-fill me-2 text-warning"></i> contacto@valdivialotes.com</p>
+          <p class="text-white-50 mb-3"><i class="bi bi-whatsapp me-2 text-success"></i> +54 9 11 5555-9999</p>
+          <span class="badge bg-dark border border-secondary text-light p-2">
+            <i class="bi bi-github"></i> Listo para GitHub Pages Hosting
+          </span>
+        </div>
+      </div>
+
+      <hr class="border-secondary my-4">
+
+      <div class="text-center text-white-50 small">
+        &copy; <span id="footer-year">2026</span> Valdivia Lotes & Terrenos. Todos los derechos reservados.
+      </div>
+    </div>
+  </footer>
+
+  <!-- MODAL 1: DETALLE Y GALERÍA DE FOTOS -->
+  <div class="modal fade" id="modalDetalle" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header modal-header-custom">
+          <h5 class="modal-title font-serif text-white mb-0"><i class="bi bi-info-circle me-2"></i> Ficha Técnica del Lote</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4" id="modalDetalleBody">
+          <!-- Renderizado dinámico desde app.js -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: FORMULARIO DE CONSULTA DIRIGIDO AL PROPIETARIO -->
+  <div class="modal fade" id="modalContacto" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header modal-header-custom">
+          <div>
+            <h5 class="modal-title font-serif text-white mb-0">Consultar por <span id="contact-lote-titulo">Lote</span></h5>
+            <small class="text-white-50">Consulta directa para el dueño</small>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        
+        <div class="modal-body p-4">
+          <!-- Caja con datos del Propietario -->
+          <div class="owner-info-box mb-3">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <small class="text-uppercase fw-bold text-muted d-block" style="font-size: 0.75rem;">Propietario del Lote:</small>
+                <span class="fw-bold text-dark fs-6" id="contact-owner-name">Propietario</span>
+              </div>
+              <a id="contact-whatsapp-link" href="#" target="_blank" class="btn btn-sm btn-success rounded-pill px-3">
+                <i class="bi bi-whatsapp"></i> WhatsApp
+              </a>
+            </div>
+            <div class="text-muted small mt-1">
+              <i class="bi bi-envelope-at me-1"></i> <span id="contact-owner-email">email@propietario.com</span>
+            </div>
+          </div>
+
+          <form id="formConsultaModal" onsubmit="procesarEnvioConsulta(event)">
+            <input type="hidden" id="contact-lote-id">
+
+            <div class="mb-3">
+              <label for="contact-user-name" class="form-label small fw-bold">Tu Nombre Completo *</label>
+              <input type="text" class="form-control" id="contact-user-name" required placeholder="Ej: Juan Pérez">
+            </div>
+
+            <div class="row g-2 mb-3">
+              <div class="col-6">
+                <label for="contact-user-email" class="form-label small fw-bold">Tu Correo Electrónico *</label>
+                <input type="email" class="form-control" id="contact-user-email" required placeholder="tu@email.com">
+              </div>
+              <div class="col-6">
+                <label for="contact-user-phone" class="form-label small fw-bold">Teléfono de Contacto</label>
+                <input type="tel" class="form-control" id="contact-user-phone" placeholder="+54 9 11 ...">
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="contact-subject" class="form-label small fw-bold">Asunto</label>
+              <input type="text" class="form-control bg-light" id="contact-subject" readonly>
+            </div>
+
+            <div class="mb-4">
+              <label for="contact-user-message" class="form-label small fw-bold">Mensaje o Consulta *</label>
+              <textarea class="form-control" id="contact-user-message" rows="4" required placeholder="Hola, quisiera consultar disponibilidad, formas de pago y coordinar una visita al terreno..."></textarea>
+            </div>
+
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-accent btn-lg">
+                <i class="bi bi-send-fill"></i> Enviar Mensaje al Correo del Dueño
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPTS EXTERNOS -->
+  <!-- Bootstrap 5 Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Leaflet.js -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- EmailJS SDK (Opcional para envío silencioso de formularios) -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+  <!-- SCRIPTS DEL PROYECTO -->
+  <script src="js/data.js"></script>
+  <script src="js/map.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>
