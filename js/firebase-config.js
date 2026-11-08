@@ -9,12 +9,13 @@ const ADMIN_EMAIL_AUTORIZADO = "sergiovaldivia4@gmail.com";
 
 // Configuración de Firebase (reemplaza con tus credenciales de consola Firebase)
 const firebaseConfig = {
-  apiKey: "TU_API_KEY",
-  authDomain: "TU_PROJECT_ID.firebaseapp.com",
-  projectId: "TU_PROJECT_ID",
-  storageBucket: "TU_PROJECT_ID.appspot.com",
-  messagingSenderId: "TU_MESSAGING_SENDER_ID",
-  appId: "TU_APP_ID"
+  apiKey: "AIzaSyA0yKAAXbuXSQoUddWxzdZPPmwkDmZZLyQ",
+  authDomain: "cordoba-serrana-inmuebles.firebaseapp.com",
+  projectId: "cordoba-serrana-inmuebles",
+  storageBucket: "cordoba-serrana-inmuebles.firebasestorage.app",
+  messagingSenderId: "95745398989",
+  appId: "1:95745398989:web:0dcd17ca9b0c25ccbdf184",
+  measurementId: "G-TPN0V9BMGG"
 };
 
 // Variable para verificar si Firebase está configurado con credenciales reales
@@ -172,6 +173,42 @@ async function sembrarDatosInicialesEnFirestore(datosIniciales) {
   } catch (error) {
     console.warn("No se pudieron sembrar datos iniciales:", error);
   }
+}
+
+// 7.1 RESTAURAR CATÁLOGO COMPLETO DESDE DATA.JS HACIA FIRESTORE (A PEDIDO DEL USUARIO)
+async function restaurarDatosDesdeDataJS() {
+  if (typeof lotesData === "undefined" || !lotesData.length) {
+    alert("No se encontraron inmuebles en data.js para restaurar.");
+    return;
+  }
+
+  if (!confirm("¿Deseas restaurar todos los inmuebles de ejemplo desde 'data.js' en la base de datos de Firestore?")) {
+    return;
+  }
+
+  if (db && isFirebaseConfigurado()) {
+    try {
+      const batch = db.batch();
+      lotesData.forEach(item => {
+        const docRef = db.collection("inmuebles").doc(item.id);
+        const copia = { ...item };
+        delete copia.id;
+        batch.set(docRef, copia, { merge: true });
+      });
+      await batch.commit();
+      alert("✅ ¡Todos los inmuebles de data.js han sido restaurados con éxito en Firestore!");
+      window.location.reload();
+      return;
+    } catch (error) {
+      console.error("Error al restaurar catálogo en Firestore:", error);
+      alert("Error al guardar en Firestore: " + error.message);
+    }
+  }
+
+  // Fallback si está en modo local
+  localStorage.setItem("cordoba_serrana_inventario", JSON.stringify(lotesData));
+  alert("✅ ¡Inmuebles restaurados en el almacenamiento local!");
+  window.location.reload();
 }
 
 // ==============================================================
