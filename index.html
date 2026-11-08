@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Landing Page interactiva de Venta de Lotes y Terrenos. Explora en el mapa interactivo, consulta superficies, precios y contacta directamente al dueño de cada lote.">
-  <title>Valdivia Lotes & Terrenos | Venta de Lotes Interactivas</title>
+  <meta name="description" content="Córdoba Serrana Inmuebles: Terrenos y Lotes en venta en Villa Icho Cruz (Valle de Punilla) y Departamentos / Locales en Córdoba Capital. Mapa satelital interactivo y contacto directo con propietarios.">
+  <title>Córdoba Serrana Inmuebles | Terrenos y Propiedades en Córdoba</title>
 
   <!-- BOOTSTRAP 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -14,8 +14,19 @@
   <!-- LEAFLET.JS (MAPAS INTERACTIVOS) -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
-  <!-- ESTILOS PERSONALIZADOS -->
-  <link rel="stylesheet" href="css/styles.css">
+  <!-- ESTILOS PERSONALIZADOS (con versionado anti-caché) -->
+  <link rel="stylesheet" href="css/styles.css?v=2.1">
+
+  <!-- GOOGLE ANALYTICS 4 (Opcional: Si tienes ID de medición GA4, puedes descomentar estas líneas) -->
+  <!--
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TU_ID_MEDICION"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-TU_ID_MEDICION');
+  </script>
+  -->
 </head>
 <body>
 
@@ -23,8 +34,11 @@
   <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
     <div class="container">
       <a class="navbar-brand d-flex align-items-center gap-2" href="#">
-        <i class="bi bi-geo-fill text-warning"></i>
-        <span class="site-brand-name">Valdivia Lotes</span>
+        <i class="bi bi-mountain text-warning fs-3"></i>
+        <div>
+          <span class="site-brand-name fw-bold">Córdoba Serrana</span>
+          <small class="d-block text-white-50" style="font-size: 0.65rem; letter-spacing: 1px;">INMUEBLES & BIENES RAÍCES</small>
+        </div>
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
         <span class="navbar-toggler-icon"></span>
@@ -34,11 +48,11 @@
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
           <li class="nav-item"><a class="nav-link active" href="#inicio">Inicio</a></li>
           <li class="nav-item"><a class="nav-link" href="#seccion-mapa">Mapa Interactivo</a></li>
-          <li class="nav-item"><a class="nav-link" href="#seccion-lotes">Catálogo de Lotes</a></li>
+          <li class="nav-item"><a class="nav-link" href="#seccion-lotes">Propiedades</a></li>
           <li class="nav-item"><a class="nav-link" href="#contacto-general">Contacto</a></li>
           <li class="nav-item ms-lg-3 mt-2 mt-lg-0">
-            <a href="#seccion-mapa" class="btn btn-accent btn-sm">
-              <i class="bi bi-map-fill"></i> Explorar Mapa
+            <a href="admin.html" class="btn btn-outline-light btn-sm" title="Panel de administración exclusivo con Google">
+              <i class="bi bi-shield-lock-fill text-warning me-1"></i> Admin Panel
             </a>
           </li>
         </ul>
@@ -52,19 +66,19 @@
       <div class="row align-items-center">
         <div class="col-lg-7">
           <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold mb-3">
-            <i class="bi bi-stars"></i> Desarrollo Inmobiliario Exclusivo
+            <i class="bi bi-stars"></i> Sierras de Punilla & Oportunidades Urbanas
           </span>
-          <h1 class="hero-title site-brand-name">Valdivia Lotes & Terrenos</h1>
+          <h1 class="hero-title site-brand-name">Córdoba Serrana Inmuebles</h1>
           <p id="site-subtitle" class="hero-subtitle mb-4">
-            Encuentra el terreno perfecto para construir tu hogar o proyecto. Explora la ubicación en el mapa interactivo y contacta directamente al propietario de cada lote.
+            Terrenos únicos en Villa Icho Cruz y propiedades exclusivas en la Ciudad de Córdoba. Explora cada ubicación en el mapa satelital y contacta directamente al dueño.
           </p>
 
           <div class="d-flex flex-wrap gap-3 mb-5">
             <a href="#seccion-mapa" class="btn btn-accent btn-lg">
-              <i class="bi bi-geo-alt-fill"></i> Ver Mapa de Lotes
+              <i class="bi bi-map-fill"></i> Explorar en el Mapa
             </a>
             <a href="#seccion-lotes" class="btn btn-outline-light btn-lg">
-              <i class="bi bi-grid-3x3-gap-fill"></i> Ver Lista de Terrenos
+              <i class="bi bi-grid-3x3-gap-fill"></i> Ver Todas las Propiedades
             </a>
           </div>
         </div>
@@ -74,7 +88,7 @@
             <div class="col-6">
               <div class="hero-stat-card">
                 <div class="stat-number" id="stat-total-lotes">0</div>
-                <small class="text-white-50 text-uppercase fw-semibold">Total Terrenos</small>
+                <small class="text-white-50 text-uppercase fw-semibold">Inmuebles Activos</small>
               </div>
             </div>
             <div class="col-6">
@@ -106,74 +120,105 @@
 
     <!-- SECCIÓN MAPA INTERACTIVO -->
     <section id="seccion-mapa" class="mb-5 pt-3">
-      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
         <div>
           <span class="text-success fw-bold text-uppercase tracking-wider small">
-            <i class="bi bi-pin-map-fill"></i> Ubicación y Delimitación
+            <i class="bi bi-pin-map-fill"></i> Geolocalización Satelital
           </span>
-          <h2 class="h1 font-serif fw-bold text-success-emphasis">Mapa Interactivo de Lotes</h2>
-          <p class="text-muted">Haz clic en cualquier lote sobre el mapa satelital para ver superficie, costo y enviar consulta directa a su propietario.</p>
+          <h2 class="h1 font-serif fw-bold text-success-emphasis">Mapa Interactivo de Propiedades</h2>
+          <p class="text-muted mb-0">Explora la delimitación perimetral de los lotes y la ubicación exacta de las propiedades en Córdoba.</p>
         </div>
 
-        <!-- Leyenda del mapa -->
-        <div class="d-flex flex-wrap gap-2 mt-2 mt-md-0">
-          <span class="badge-lote badge-disponible"><i class="bi bi-circle-fill"></i> Disponible</span>
-          <span class="badge-lote badge-reservado"><i class="bi bi-circle-fill"></i> Reservado</span>
-          <span class="badge-lote badge-vendido"><i class="bi bi-circle-fill"></i> Vendido</span>
+        <div class="d-flex flex-wrap gap-2 align-items-center">
+          <button class="btn btn-sm btn-outline-success fw-bold" onclick="enfocarZonaEnMapa('ichocruz')">
+            <i class="bi bi-geo-alt-fill text-danger"></i> Villa Icho Cruz
+          </button>
+          <button class="btn btn-sm btn-outline-primary fw-bold" onclick="enfocarZonaEnMapa('cordoba')">
+            <i class="bi bi-buildings-fill"></i> Córdoba Capital
+          </button>
         </div>
+      </div>
+
+      <!-- Leyenda del mapa -->
+      <div class="d-flex flex-wrap gap-2 mb-3">
+        <span class="badge-lote badge-disponible"><i class="bi bi-circle-fill"></i> Disponible</span>
+        <span class="badge-lote badge-reservado"><i class="bi bi-circle-fill"></i> Reservado</span>
+        <span class="badge-lote badge-vendido"><i class="bi bi-circle-fill"></i> Vendido</span>
       </div>
 
       <!-- Contenedor del Mapa Leaflet -->
       <div id="mapa-container"></div>
     </section>
 
-    <!-- BARRA DE FILTROS Y BÚSQUEDA -->
+    <!-- BARRA DE FILTROS Y BÚSQUEDA MULTI-CRITERIO -->
     <section id="seccion-lotes" class="pt-4 mb-4">
       <div class="row align-items-center mb-4">
         <div class="col-md-6">
-          <h2 class="h2 font-serif fw-bold">Catálogo de Terrenos</h2>
-          <p class="text-muted">Explora y filtra según tus necesidades</p>
+          <h2 class="h2 font-serif fw-bold">Catálogo de Inmuebles</h2>
+          <p class="text-muted">Encuentra tu próximo terreno, departamento o local comercial</p>
         </div>
 
         <div class="col-md-6">
           <div class="input-group">
-            <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
-            <input type="text" id="filter-search" class="form-control border-start-0 ps-0" placeholder="Buscar por número de lote, manzana o descripción...">
+            <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+            <input type="text" id="filter-search" class="form-control border-start-0 ps-0" placeholder="Buscar por título, zona, descripción...">
           </div>
         </div>
       </div>
 
       <div class="map-control-box mb-4">
         <div class="row g-3 align-items-center">
-          <div class="col-md-4">
-            <label for="filter-estado" class="form-label small fw-bold text-muted mb-1">Estado de Disponibilidad:</label>
+          
+          <div class="col-md-3">
+            <label for="filter-tipo" class="form-label small fw-bold text-muted mb-1">Tipo de Propiedad:</label>
+            <select id="filter-tipo" class="form-select">
+              <option value="todos">Todos los Tipos</option>
+              <option value="lote">Lotes / Terrenos</option>
+              <option value="departamento">Departamentos</option>
+              <option value="local">Locales Comerciales</option>
+              <option value="casa">Casas / Cabañas</option>
+            </select>
+          </div>
+
+          <div class="col-md-3">
+            <label for="filter-ubicacion" class="form-label small fw-bold text-muted mb-1">Zona / Localidad:</label>
+            <select id="filter-ubicacion" class="form-select">
+              <option value="todas">Todas las Zonas</option>
+              <option value="Villa Icho Cruz">Villa Icho Cruz (Punilla)</option>
+              <option value="Córdoba Capital">Córdoba Capital</option>
+            </select>
+          </div>
+
+          <div class="col-md-2">
+            <label for="filter-estado" class="form-label small fw-bold text-muted mb-1">Disponibilidad:</label>
             <select id="filter-estado" class="form-select">
-              <option value="todos">Todos los Estados</option>
-              <option value="disponible">Solo Disponibles</option>
+              <option value="todos">Todos</option>
+              <option value="disponible">Disponibles</option>
               <option value="reservado">Reservados</option>
               <option value="vendido">Vendidos</option>
             </select>
           </div>
 
-          <div class="col-md-4">
+          <div class="col-md-2">
             <label for="filter-orden" class="form-label small fw-bold text-muted mb-1">Ordenar Por:</label>
             <select id="filter-orden" class="form-select">
-              <option value="default">Por Defecto</option>
+              <option value="orden-prioridad">Orden Destacado</option>
               <option value="precio-asc">Precio: Menor a Mayor</option>
               <option value="precio-desc">Precio: Mayor a Menor</option>
-              <option value="superficie-desc">Superficie: Mayor a Menor</option>
+              <option value="superficie-desc">Mayor Superficie</option>
             </select>
           </div>
 
-          <div class="col-md-4 d-flex align-items-end">
+          <div class="col-md-2 d-flex align-items-end">
             <button class="btn btn-outline-secondary w-100" onclick="limpiarFiltros()">
-              <i class="bi bi-arrow-counterclockwise"></i> Limpiar Filtros
+              <i class="bi bi-arrow-counterclockwise"></i> Limpiar
             </button>
           </div>
+
         </div>
       </div>
 
-      <!-- CUADRÍCULA DE LOTES -->
+      <!-- CUADRÍCULA DE INMUEBLES -->
       <div class="row" id="lotes-container">
         <!-- Renderizado dinámico desde app.js -->
       </div>
@@ -186,9 +231,9 @@
     <div class="container">
       <div class="row g-4 mb-4">
         <div class="col-lg-5">
-          <div class="footer-brand mb-2 site-brand-name">Valdivia Lotes</div>
+          <div class="footer-brand mb-2 site-brand-name">Córdoba Serrana Inmuebles</div>
           <p class="text-white-50 pe-lg-4">
-            Plataforma interactiva para la publicación y venta directa de lotes y terrenos urbanos y rurales.
+            Plataforma digital para la publicación y venta directa de terrenos en las Sierras de Punilla y propiedades comerciales y residenciales en Córdoba.
           </p>
         </div>
 
@@ -196,15 +241,18 @@
           <h5 class="text-white mb-3 font-serif">Navegación</h5>
           <ul class="list-unstyled">
             <li class="mb-2"><a href="#inicio" class="text-white-50 text-decoration-none">Inicio</a></li>
-            <li class="mb-2"><a href="#seccion-mapa" class="text-white-50 text-decoration-none">Mapa Interactivo</a></li>
-            <li class="mb-2"><a href="#seccion-lotes" class="text-white-50 text-decoration-none">Catálogo de Lotes</a></li>
+            <li class="mb-2"><a href="#seccion-mapa" class="text-white-50 text-decoration-none">Mapa Satelital</a></li>
+            <li class="mb-2"><a href="#seccion-lotes" class="text-white-50 text-decoration-none">Catálogo de Propiedades</a></li>
+            <li class="mb-2"><a href="admin.html" class="text-warning text-decoration-none"><i class="bi bi-shield-lock-fill me-1"></i> Panel de Administración</a></li>
           </ul>
         </div>
 
         <div class="col-lg-4 col-md-6">
-          <h5 class="text-white mb-3 font-serif">Contacto Administración</h5>
-          <p class="text-white-50 mb-2"><i class="bi bi-envelope-fill me-2 text-warning"></i> contacto@valdivialotes.com</p>
-          <p class="text-white-50 mb-3"><i class="bi bi-whatsapp me-2 text-success"></i> +54 9 11 5555-9999</p>
+          <h5 class="text-white mb-3 font-serif">Administración General</h5>
+          <p class="text-white-50 mb-3">
+            <i class="bi bi-envelope-fill me-2 text-warning"></i>
+            <a href="mailto:sergiovaldivia4@gmail.com" class="text-white text-decoration-none">sergiovaldivia4@gmail.com</a>
+          </p>
           <span class="badge bg-dark border border-secondary text-light p-2">
             <i class="bi bi-github"></i> Listo para GitHub Pages Hosting
           </span>
@@ -214,7 +262,7 @@
       <hr class="border-secondary my-4">
 
       <div class="text-center text-white-50 small">
-        &copy; <span id="footer-year">2026</span> Valdivia Lotes & Terrenos. Todos los derechos reservados.
+        &copy; <span id="footer-year">2026</span> <span class="site-brand-name">Córdoba Serrana Inmuebles</span>. Todos los derechos reservados.
       </div>
     </div>
   </footer>
@@ -224,7 +272,7 @@
     <div class="modal-dialog modal-lg modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header modal-header-custom">
-          <h5 class="modal-title font-serif text-white mb-0"><i class="bi bi-info-circle me-2"></i> Ficha Técnica del Lote</h5>
+          <h5 class="modal-title font-serif text-white mb-0"><i class="bi bi-info-circle me-2"></i> Ficha Técnica del Inmueble</h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body p-4" id="modalDetalleBody">
@@ -240,18 +288,17 @@
       <div class="modal-content">
         <div class="modal-header modal-header-custom">
           <div>
-            <h5 class="modal-title font-serif text-white mb-0">Consultar por <span id="contact-lote-titulo">Lote</span></h5>
-            <small class="text-white-50">Consulta directa para el dueño</small>
+            <h5 class="modal-title font-serif text-white mb-0">Consultar por <span id="contact-lote-titulo">Propiedad</span></h5>
+            <small class="text-white-50">Consulta directa para el propietario</small>
           </div>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         
         <div class="modal-body p-4">
-          <!-- Caja con datos del Propietario -->
           <div class="owner-info-box mb-3">
             <div class="d-flex justify-content-between align-items-center">
               <div>
-                <small class="text-uppercase fw-bold text-muted d-block" style="font-size: 0.75rem;">Propietario del Lote:</small>
+                <small class="text-uppercase fw-bold text-muted d-block" style="font-size: 0.75rem;">Propietario / Contacto:</small>
                 <span class="fw-bold text-dark fs-6" id="contact-owner-name">Propietario</span>
               </div>
               <a id="contact-whatsapp-link" href="#" target="_blank" class="btn btn-sm btn-success rounded-pill px-3">
@@ -278,7 +325,7 @@
               </div>
               <div class="col-6">
                 <label for="contact-user-phone" class="form-label small fw-bold">Teléfono de Contacto</label>
-                <input type="tel" class="form-control" id="contact-user-phone" placeholder="+54 9 11 ...">
+                <input type="tel" class="form-control" id="contact-user-phone" placeholder="+54 9 351 ...">
               </div>
             </div>
 
@@ -289,7 +336,7 @@
 
             <div class="mb-4">
               <label for="contact-user-message" class="form-label small fw-bold">Mensaje o Consulta *</label>
-              <textarea class="form-control" id="contact-user-message" rows="4" required placeholder="Hola, quisiera consultar disponibilidad, formas de pago y coordinar una visita al terreno..."></textarea>
+              <textarea class="form-control" id="contact-user-message" rows="4" required placeholder="Hola, quisiera consultar disponibilidad, formas de pago y coordinar una visita a la propiedad..."></textarea>
             </div>
 
             <div class="d-grid gap-2">
@@ -304,17 +351,20 @@
   </div>
 
   <!-- SCRIPTS EXTERNOS -->
-  <!-- Bootstrap 5 Bundle JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- Leaflet.js -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <!-- EmailJS SDK (Opcional para envío silencioso de formularios) -->
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
-  <!-- SCRIPTS DEL PROYECTO -->
-  <script src="js/data.js"></script>
-  <script src="js/map.js"></script>
-  <script src="js/app.js"></script>
+  <!-- FIREBASE SDK COMPAT (CDN OFICIAL DE GOOGLE) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+  <!-- SCRIPTS DEL PROYECTO (con versionado anti-caché) -->
+  <script src="js/data.js?v=2.1"></script>
+  <script src="js/firebase-config.js?v=2.1"></script>
+  <script src="js/map.js?v=2.1"></script>
+  <script src="js/app.js?v=2.1"></script>
 
 </body>
 </html>

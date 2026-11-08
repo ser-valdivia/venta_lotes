@@ -1,6 +1,6 @@
 /* 
- * ESTILOS PERSONALIZADOS - VALDIVIA LOTES Y TERRENOS
- * Estilos modernos para Landing Page con Bootstrap 5 & Leaflet.js
+ * ESTILOS PERSONALIZADOS - CÓRDOBA SERRANA INMUEBLES
+ * Diseño responsivo, elegante y optimizado para Real Estate (Terrenos y Propiedades)
  */
 
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap');
@@ -16,7 +16,7 @@
   --text-main: #1e293b;
   --text-muted: #64748b;
   
-  /* Estados de Lotes */
+  /* Estados de Inmuebles */
   --disponible-color: #10b981;
   --disponible-bg: rgba(16, 185, 129, 0.12);
   --reservado-color: #f59e0b;
@@ -46,11 +46,11 @@ h1, h2, h3, .font-serif {
 
 /* NAVBAR */
 .navbar-custom {
-  background-color: rgba(15, 57, 43, 0.95);
+  background-color: rgba(15, 57, 43, 0.96);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   transition: all 0.3s ease;
-  padding: 1rem 0;
+  padding: 0.9rem 0;
 }
 
 .navbar-custom .navbar-brand {
@@ -63,7 +63,7 @@ h1, h2, h3, .font-serif {
 .navbar-custom .nav-link {
   color: rgba(255, 255, 255, 0.85);
   font-weight: 500;
-  margin: 0 0.4rem;
+  margin: 0 0.35rem;
   transition: color 0.2s ease;
 }
 
@@ -76,12 +76,12 @@ h1, h2, h3, .font-serif {
 .hero-section {
   position: relative;
   min-height: 85vh;
-  background: linear-gradient(135deg, rgba(15, 57, 43, 0.88), rgba(27, 83, 64, 0.75)), 
+  background: linear-gradient(135deg, rgba(15, 57, 43, 0.90), rgba(27, 83, 64, 0.78)), 
               url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
   display: flex;
   align-items: center;
   color: #ffffff;
-  padding: 6rem 0 4rem;
+  padding: 5.5rem 0 4rem;
 }
 
 .hero-title {
@@ -114,17 +114,18 @@ h1, h2, h3, .font-serif {
   color: var(--accent-color);
 }
 
-/* BADGES DE ESTADO */
+/* BADGES DE ESTADO Y TIPO */
 .badge-lote {
   font-weight: 600;
-  padding: 0.45em 0.85em;
+  padding: 0.4em 0.8em;
   border-radius: 30px;
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
+  width: fit-content;
 }
 
 .badge-disponible {
@@ -144,6 +145,22 @@ h1, h2, h3, .font-serif {
   color: var(--vendido-color);
   border: 1px solid rgba(239, 68, 68, 0.3);
 }
+
+.badge-tipo {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.3em 0.7em;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  width: fit-content;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+.badge-tipo-lote { background-color: #0284c7; color: #ffffff; }
+.badge-tipo-departamento { background-color: #7c3aed; color: #ffffff; }
+.badge-tipo-local { background-color: #d97706; color: #ffffff; }
+.badge-tipo-casa { background-color: #059669; color: #ffffff; }
 
 /* MAPA INTERACTIVO */
 #mapa-container {
@@ -173,7 +190,7 @@ h1, h2, h3, .font-serif {
 
 .leaflet-popup-content {
   margin: 0 !important;
-  width: 280px !important;
+  width: 290px !important;
 }
 
 .map-popup-card {
@@ -190,7 +207,7 @@ h1, h2, h3, .font-serif {
   padding: 1rem;
 }
 
-/* TARJETAS DE LOTES (GRID) */
+/* TARJETAS DE INMUEBLES */
 .lote-card {
   background-color: var(--bg-card);
   border-radius: var(--radius-md);
@@ -214,6 +231,7 @@ h1, h2, h3, .font-serif {
   position: relative;
   height: 220px;
   overflow: hidden;
+  background-color: #e2e8f0;
 }
 
 .lote-card-img {
@@ -229,16 +247,16 @@ h1, h2, h3, .font-serif {
 
 .lote-badge-top-left {
   position: absolute;
-  top: 14px;
-  left: 14px;
+  top: 12px;
+  left: 12px;
   z-index: 2;
 }
 
 .lote-price-tag {
   position: absolute;
-  bottom: 14px;
-  right: 14px;
-  background: rgba(15, 57, 43, 0.9);
+  bottom: 12px;
+  right: 12px;
+  background: rgba(15, 57, 43, 0.92);
   backdrop-filter: blur(8px);
   color: var(--accent-color);
   font-weight: 700;
@@ -246,7 +264,7 @@ h1, h2, h3, .font-serif {
   padding: 0.35rem 0.9rem;
   border-radius: var(--radius-sm);
   z-index: 2;
-  border: 1px solid rgba(217, 167, 74, 0.3);
+  border: 1px solid rgba(217, 167, 74, 0.35);
 }
 
 .lote-card-body {
@@ -257,7 +275,7 @@ h1, h2, h3, .font-serif {
 }
 
 .lote-title {
-  font-size: 1.4rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: var(--primary-color);
   margin-bottom: 0.25rem;
@@ -265,12 +283,12 @@ h1, h2, h3, .font-serif {
 
 .lote-specs {
   display: flex;
-  gap: 1.2rem;
+  justify-content: space-between;
   margin: 1rem 0;
   padding: 0.75rem 0;
   border-top: 1px dashed #e2e8f0;
   border-bottom: 1px dashed #e2e8f0;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   color: var(--text-muted);
 }
 
@@ -285,13 +303,13 @@ h1, h2, h3, .font-serif {
   font-size: 1.1rem;
 }
 
-/* BOTONES PERSONALIZADOS */
+/* BOTONES */
 .btn-accent {
   background-color: var(--accent-color);
   color: #0f392b;
   font-weight: 700;
   border: none;
-  padding: 0.7rem 1.4rem;
+  padding: 0.65rem 1.2rem;
   border-radius: var(--radius-sm);
   transition: all 0.25s ease;
   display: inline-flex;
@@ -305,21 +323,6 @@ h1, h2, h3, .font-serif {
   color: #0f392b;
   transform: translateY(-2px);
   box-shadow: 0 4px 14px rgba(217, 167, 74, 0.4);
-}
-
-.btn-primary-dark {
-  background-color: var(--primary-color);
-  color: #ffffff;
-  font-weight: 600;
-  border: none;
-  padding: 0.7rem 1.4rem;
-  border-radius: var(--radius-sm);
-  transition: all 0.25s ease;
-}
-
-.btn-primary-dark:hover {
-  background-color: var(--primary-light);
-  color: #ffffff;
 }
 
 /* MODALES */
@@ -354,15 +357,14 @@ h1, h2, h3, .font-serif {
 
 .footer-brand {
   font-family: 'Playfair Display', serif;
-  font-size: 1.8rem;
+  font-size: 1.7rem;
   color: #ffffff;
   font-weight: 700;
 }
 
-/* RESPONSIVE */
 @media (max-width: 768px) {
   .hero-title {
-    font-size: 2.2rem;
+    font-size: 2.1rem;
   }
   #mapa-container {
     height: 400px;

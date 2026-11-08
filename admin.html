@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de Administración | Córdoba Serrana Inmuebles</title>
+
+  <!-- BOOTSTRAP 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- BOOTSTRAP ICONS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <!-- LEAFLET MAPS CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <!-- ESTILOS ADMIN -->
+  <link rel="stylesheet" href="css/admin.css?v=2.1">
+</head>
+<body class="admin-body">
+
+  <!-- ============================================== -->
+  <!-- 1. PANTALLA DE ACCESO RESTRINGIDO (LOGIN GATE) -->
+  <!-- ============================================== -->
+  <div id="seccion-login" class="container d-flex align-items-center justify-content-center" style="min-height: 90vh;">
+    <div class="card border-0 shadow-lg p-4 p-md-5 text-center" style="max-width: 480px; border-radius: 20px;">
+      <div class="mb-3">
+        <i class="bi bi-shield-lock-fill text-warning" style="font-size: 3.5rem;"></i>
+      </div>
+      <h3 class="fw-bold text-dark font-serif mb-1">Córdoba Serrana</h3>
+      <p class="text-muted small text-uppercase fw-semibold mb-4" style="letter-spacing: 1px;">Panel de Administración</p>
+
+      <div class="alert alert-warning text-start small mb-4 border-0" style="background-color: #fef3c7;">
+        <i class="bi bi-shield-lock-fill text-warning me-1"></i>
+        <strong>Acceso Restringido:</strong> Solo la cuenta de administrador autorizada puede gestionar las propiedades y fotos.
+      </div>
+
+      <button id="btn-login-google" class="btn btn-outline-dark btn-lg w-100 d-flex align-items-center justify-content-center gap-3 py-3 rounded-pill fw-bold shadow-sm" onclick="iniciarSesionAdmin()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 48 48">
+          <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/>
+          <path fill="#FF3D00" d="m6.306 14.691 6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"/>
+          <path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0 1 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/>
+          <path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/>
+        </svg>
+        <span>Iniciar Sesión con Google</span>
+      </button>
+
+      <!-- AVISO AUTOMÁTICO SI SE ABRE CON DOBLE CLIC (FILE://) -->
+      <div id="aviso-file-protocol" class="alert alert-info small text-start mt-3 mb-0" style="display: none; border-radius: 12px;">
+        <div class="d-flex align-items-start gap-2">
+          <i class="bi bi-info-circle-fill text-primary fs-5 mt-1"></i>
+          <div>
+            <strong>Estás abriendo desde archivo local (<code>file:///</code>):</strong><br>
+            Google OAuth requiere protocolo <code>http://</code> o <code>https://</code> (como en GitHub Pages). Para probar en tu computadora sin abrir un servidor:
+            <div class="mt-2 d-grid">
+              <button type="button" class="btn btn-sm btn-primary fw-bold" onclick="entrarModoLocalOffline()">
+                <i class="bi bi-laptop me-1"></i> Entrar en Modo Local de Prueba
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-4 pt-3 border-top">
+        <a href="index.html" class="text-decoration-none text-muted small">
+          <i class="bi bi-arrow-left"></i> Volver al sitio público
+        </a>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ============================================== -->
+  <!-- 2. PANEL PRINCIPAL (SE MUESTRA TRAS AUTENTICAR) -->
+  <!-- ============================================== -->
+  <div id="seccion-panel-admin" style="display: none;">
+
+    <!-- NAVBAR ADMIN -->
+    <nav class="admin-navbar">
+      <div class="container-fluid px-4">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-mountain fs-3 text-warning"></i>
+            <div>
+              <span class="fw-bold fs-5 text-white">Córdoba Serrana Inmuebles</span>
+              <small class="text-white-50 d-block" style="font-size: 0.75rem;">
+                <span class="text-success"><i class="bi bi-check-circle-fill"></i> Modo Tiempo Real</span> | Administrador Activo
+              </small>
+            </div>
+          </div>
+
+          <div class="d-flex align-items-center gap-3">
+            <!-- Perfil del Administrador -->
+            <div class="d-flex align-items-center gap-2 bg-dark bg-opacity-50 px-3 py-1 rounded-pill border border-secondary">
+              <i class="bi bi-person-check-fill text-success"></i>
+              <span class="small text-white fw-bold" id="admin-user-email">Administrador</span>
+            </div>
+
+            <a href="index.html" target="_blank" class="btn btn-sm btn-outline-light">
+              <i class="bi bi-box-arrow-up-right me-1"></i> Ver Sitio
+            </a>
+
+            <button class="btn btn-sm btn-outline-warning" onclick="abrirModalExportar()" title="Descargar copia de seguridad en código">
+              <i class="bi bi-download me-1"></i> Backup
+            </button>
+
+            <button class="btn btn-sm btn-danger" onclick="logoutGoogle()" title="Cerrar Sesión">
+              <i class="bi bi-box-arrow-right"></i> Salir
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="container-fluid px-4 py-4">
+
+      <!-- BANNER DE RECOMENDACIONES SEO GOOGLE PARA FOTOS -->
+      <div class="seo-photo-banner">
+        <div class="d-flex align-items-start gap-3">
+          <div class="fs-2 text-success mt-1">
+            <i class="bi bi-google"></i>
+          </div>
+          <div>
+            <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+              <h6 class="mb-0">Guía de Optimización SEO y Velocidad para Fotos (Google Core Web Vitals)</h6>
+              <span class="seo-badge"><i class="bi bi-speedometer2"></i> Carga Rápida</span>
+              <span class="seo-badge"><i class="bi bi-search"></i> Posicionamiento Google</span>
+            </div>
+            <p class="small text-secondary mb-2">
+              Para que Google indexe tus publicaciones en los primeros resultados de búsqueda y carguen al instante en celulares:
+            </p>
+            <div class="row g-2 small text-dark">
+              <div class="col-md-4">
+                <strong><i class="bi bi-aspect-ratio text-success me-1"></i> Medida Óptima:</strong><br>
+                <span><strong>1200 × 800 píxeles</strong> (proporción 3:2 o 16:9).</span>
+              </div>
+              <div class="col-md-4">
+                <strong><i class="bi bi-hdd-network text-success me-1"></i> Peso Máximo:</strong><br>
+                <span>Menos de <strong>250 KB</strong> por imagen (formato WebP o JPG optimizado).</span>
+              </div>
+              <div class="col-md-4">
+                <strong><i class="bi bi-google-drive text-success me-1"></i> Enlaces Google Drive:</strong><br>
+                <span>Pega el enlace de compartir de Drive y el panel lo convierte automáticamente a foto web.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- SECCIÓN DE MÉTRICAS Y RENDIMIENTO EN VIVO      -->
+      <!-- ============================================== -->
+      <div class="row g-3 mb-4">
+        <!-- Tarjeta 1: Visitas Totales -->
+        <div class="col-sm-6 col-xl-3">
+          <div class="admin-card mb-0 h-100 border-start border-4 border-primary">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <small class="text-muted fw-bold text-uppercase" style="font-size: 0.72rem;">Visitas al Sitio</small>
+                <h3 class="fw-bold mb-0 text-primary mt-1" id="metrica-visitas">0</h3>
+                <small class="text-success small fw-semibold"><i class="bi bi-graph-up-arrow"></i> Tráfico en vivo</small>
+              </div>
+              <div class="bg-primary bg-opacity-10 p-3 rounded-circle text-primary">
+                <i class="bi bi-eye-fill fs-4"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tarjeta 2: Clics en WhatsApp -->
+        <div class="col-sm-6 col-xl-3">
+          <div class="admin-card mb-0 h-100 border-start border-4 border-success">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <small class="text-muted fw-bold text-uppercase" style="font-size: 0.72rem;">Contactos WhatsApp</small>
+                <h3 class="fw-bold mb-0 text-success mt-1" id="metrica-whatsapp">0</h3>
+                <small class="text-muted small fw-semibold"><span id="metrica-conversion">0%</span> tasa de contacto</small>
+              </div>
+              <div class="bg-success bg-opacity-10 p-3 rounded-circle text-success">
+                <i class="bi bi-whatsapp fs-4"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tarjeta 3: Consultas por Correo -->
+        <div class="col-sm-6 col-xl-3">
+          <div class="admin-card mb-0 h-100 border-start border-4 border-warning">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <small class="text-muted fw-bold text-uppercase" style="font-size: 0.72rem;">Consultas por Correo</small>
+                <h3 class="fw-bold mb-0 text-warning-emphasis mt-1" id="metrica-email">0</h3>
+                <small class="text-muted small fw-semibold"><i class="bi bi-envelope"></i> Leads recibidos</small>
+              </div>
+              <div class="bg-warning bg-opacity-10 p-3 rounded-circle text-warning">
+                <i class="bi bi-envelope-check-fill fs-4"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tarjeta 4: Google Analytics & Search Console -->
+        <div class="col-sm-6 col-xl-3">
+          <div class="admin-card mb-0 h-100 border-start border-4 border-info">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <small class="text-muted fw-bold text-uppercase" style="font-size: 0.72rem;">Google Analytics & SEO</small>
+                <div class="mt-1 d-flex flex-column gap-1">
+                  <a href="https://analytics.google.com/" target="_blank" class="btn btn-sm btn-outline-primary py-0 px-2 fw-semibold text-start" style="font-size: 0.78rem;">
+                    <i class="bi bi-bar-chart-fill me-1"></i> Ver GA4 en Vivo
+                  </a>
+                  <a href="https://search.google.com/search-console" target="_blank" class="btn btn-sm btn-outline-secondary py-0 px-2 fw-semibold text-start" style="font-size: 0.78rem;">
+                    <i class="bi bi-google me-1"></i> Search Console
+                  </a>
+                </div>
+              </div>
+              <div class="bg-info bg-opacity-10 p-3 rounded-circle text-info">
+                <i class="bi bi-google fs-4"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BARRA DE ACCIONES -->
+      <div class="admin-card">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+          <div>
+            <h4 class="fw-bold mb-1"><i class="bi bi-houses-fill text-success me-2"></i>Inventario de Inmuebles</h4>
+            <p class="text-muted small mb-0">Los cambios que guardes se sincronizan <strong>de inmediato</strong> en la web pública.</p>
+          </div>
+
+          <div class="d-flex align-items-center gap-2 flex-wrap">
+            <button class="btn btn-success fw-bold px-3 py-2" onclick="abrirModalNuevoInmueble()">
+              <i class="bi bi-plus-circle-fill me-1"></i> Cargar Nuevo Inmueble
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- TABLA DE INMUEBLES -->
+      <div class="admin-card">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle table-inmuebles mb-0">
+            <thead>
+              <tr>
+                <th style="width: 80px;" title="Orden numérico de aparición en la web">Orden</th>
+                <th style="width: 90px;">Foto</th>
+                <th>Título / Manzana</th>
+                <th>Tipo</th>
+                <th>Ubicación</th>
+                <th>Precio USD</th>
+                <th>Estado</th>
+                <th style="width: 140px;" title="Muestra u oculta la propiedad en el sitio público">Publicado</th>
+                <th style="width: 130px;" class="text-end">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tabla-inmuebles-body">
+              <!-- Renderizado dinámico desde admin.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+
+  </div>
+
+
+  <!-- ============================================== -->
+  <!-- MODAL: FORMULARIO DE ALTA / EDICIÓN           -->
+  <!-- ============================================== -->
+  <div class="modal fade" id="modalInmuebleForm" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header bg-dark text-white">
+          <h5 class="modal-title fw-bold" id="modalFormTitulo">
+            <i class="bi bi-pencil-square me-2 text-warning"></i> Inmueble
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        
+        <div class="modal-body p-4">
+          <form id="formInmueble" onsubmit="guardarInmueble(event)">
+            <input type="hidden" id="form-id">
+
+            <!-- 1. DATOS BÁSICOS -->
+            <div class="row g-3 mb-4">
+              <div class="col-12">
+                <span class="badge bg-secondary text-uppercase fw-semibold mb-2">1. Información General</span>
+              </div>
+
+              <div class="col-md-6">
+                <label for="form-titulo" class="form-label small fw-bold">Título de la Publicación *</label>
+                <input type="text" class="form-control" id="form-titulo" required placeholder="Ej: Lote 01 con Vista a las Sierras">
+              </div>
+
+              <div class="col-md-3">
+                <label for="form-tipo" class="form-label small fw-bold">Tipo de Inmueble *</label>
+                <select id="form-tipo" class="form-select" required>
+                  <option value="lote">Lote / Terreno</option>
+                  <option value="departamento">Departamento</option>
+                  <option value="local">Local Comercial</option>
+                  <option value="casa">Casa / Cabaña</option>
+                </select>
+              </div>
+
+              <div class="col-md-3">
+                <label for="form-estado" class="form-label small fw-bold">Disponibilidad *</label>
+                <select id="form-estado" class="form-select" required>
+                  <option value="disponible">Disponible</option>
+                  <option value="reservado">Reservado</option>
+                  <option value="vendido">Vendido</option>
+                </select>
+              </div>
+
+              <div class="col-md-4">
+                <label for="form-ubicacion" class="form-label small fw-bold">Localidad / Zona General *</label>
+                <select id="form-ubicacion" class="form-select" required onchange="cambiarCentroMapaSegunZona(this.value)">
+                  <option value="Villa Icho Cruz">Villa Icho Cruz (Punilla)</option>
+                  <option value="Córdoba Capital">Córdoba Capital</option>
+                </select>
+              </div>
+
+              <div class="col-md-4">
+                <label for="form-manzana" class="form-label small fw-bold">Identificación / Manzana / Piso</label>
+                <input type="text" class="form-control" id="form-manzana" placeholder="Ej: Manzana A - Lote 01 o Piso 4to">
+              </div>
+
+              <div class="col-md-4">
+                <label for="form-zonaDetalle" class="form-label small fw-bold">Detalle de Ubicación</label>
+                <input type="text" class="form-control" id="form-zonaDetalle" placeholder="Ej: A 300m del Río Icho Cruz">
+              </div>
+
+              <div class="col-md-3">
+                <label for="form-precioUSD" class="form-label small fw-bold">Precio USD (Número) *</label>
+                <div class="input-group">
+                  <span class="input-group-text">$</span>
+                  <input type="number" class="form-control" id="form-precioUSD" required placeholder="25000">
+                </div>
+              </div>
+
+              <div class="col-md-3">
+                <label for="form-superficie" class="form-label small fw-bold">Superficie (m²) *</label>
+                <div class="input-group">
+                  <input type="number" class="form-control" id="form-superficie" required placeholder="500">
+                  <span class="input-group-text">m²</span>
+                </div>
+              </div>
+
+              <div class="col-md-3">
+                <label for="form-dimensiones" class="form-label small fw-bold">Medidas / Dimensiones</label>
+                <input type="text" class="form-control" id="form-dimensiones" placeholder="Ej: 15m frente x 35m fondo">
+              </div>
+
+              <div class="col-md-3">
+                <label for="form-orden" class="form-label small fw-bold">Posición en la Web (1 = Primero) *</label>
+                <input type="number" class="form-control fw-bold text-success" id="form-orden" value="1" min="1" required>
+              </div>
+
+              <div class="col-12">
+                <label for="form-descripcion" class="form-label small fw-bold">Descripción Completa</label>
+                <textarea class="form-control" id="form-descripcion" rows="3" placeholder="Describe las ventajas, servicios, orientación, escritura, etc."></textarea>
+              </div>
+
+              <div class="col-12">
+                <label for="form-caracteristicas" class="form-label small fw-bold">Servicios / Características (separados por coma)</label>
+                <input type="text" class="form-control" id="form-caracteristicas" placeholder="Ej: Luz eléctrica, Agua corriente, Gas natural, Escritura inmediata">
+              </div>
+            </div>
+
+            <!-- 2. MAPA INTERACTIVO: PIN Y POLÍGONO -->
+            <div class="mb-4">
+              <span class="badge bg-secondary text-uppercase fw-semibold mb-2">2. Ubicación en el Mapa (Coordenadas y Perímetro)</span>
+
+              <div class="map-mode-selector">
+                <div class="d-flex align-items-center gap-3">
+                  <span class="fw-bold small text-muted"><i class="bi bi-cursor-fill me-1"></i> Herramienta activa:</span>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="modoMapaRadio" id="radioModoPin" value="pin" checked onchange="setModoMapa('pin')">
+                    <label class="form-check-label fw-bold small text-success" for="radioModoPin">
+                      <i class="bi bi-geo-alt-fill text-danger"></i> Modo Pin (Clic para ubicar el centro)
+                    </label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="modoMapaRadio" id="radioModoPoligono" value="poligono" onchange="setModoMapa('poligono')">
+                    <label class="form-check-label fw-bold small text-primary" for="radioModoPoligono">
+                      <i class="bi bi-bounding-box text-primary"></i> Modo Polígono (Clics para trazar perímetro)
+                    </label>
+                  </div>
+                </div>
+
+                <div class="d-flex gap-2">
+                  <button type="button" class="btn btn-sm btn-outline-secondary" onclick="deshacerUltimoPuntoPoligono()" id="btn-deshacer-punto" disabled>
+                    <i class="bi bi-arrow-counterclockwise"></i> Deshacer Punto
+                  </button>
+                  <button type="button" class="btn btn-sm btn-outline-danger" onclick="limpiarPoligonoMapa()" id="btn-limpiar-poligono" disabled>
+                    <i class="bi bi-trash"></i> Limpiar Polígono
+                  </button>
+                </div>
+              </div>
+
+              <!-- Contenedor del Mapa -->
+              <div id="admin-map"></div>
+
+              <div class="row g-2 mt-2">
+                <div class="col-md-6">
+                  <div class="input-group input-group-sm">
+                    <span class="input-group-text bg-light fw-bold">Latitud / Longitud:</span>
+                    <input type="text" class="form-control" id="form-coordenadas-display" readonly placeholder="Haz clic en el mapa...">
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="input-group input-group-sm">
+                    <span class="input-group-text bg-light fw-bold">Vértices del Polígono:</span>
+                    <input type="text" class="form-control" id="form-poligono-count" readonly value="0 puntos delimitados">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3. GESTOR DINÁMICO DE FOTOS -->
+            <div class="mb-4">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="badge bg-secondary text-uppercase fw-semibold">3. Galería de Fotos (Compatible con Google Drive)</span>
+                <span class="small text-muted"><i class="bi bi-info-circle text-success me-1"></i> Dimensión sugerida: <strong>1200x800 px</strong> (<250 KB)</span>
+              </div>
+
+              <div id="fotos-inputs-container">
+                <!-- Se inyectan dinámicamente los campos de fotos -->
+              </div>
+
+              <button type="button" class="btn btn-sm btn-outline-success mt-1" onclick="agregarCampoFoto()">
+                <i class="bi bi-plus-lg me-1"></i> Agregar Otra Foto
+              </button>
+            </div>
+
+            <!-- 4. DATOS DEL PROPIETARIO Y VÍAS DE CONTACTO -->
+            <div class="mb-4">
+              <span class="badge bg-secondary text-uppercase fw-semibold mb-2">4. Datos del Dueño y Vías de Contacto</span>
+
+              <div class="row g-3">
+                <div class="col-md-3">
+                  <label for="form-owner-name" class="form-label small fw-bold">Nombre del Propietario *</label>
+                  <input type="text" class="form-control" id="form-owner-name" required placeholder="Ej: Roberto Fernández">
+                </div>
+
+                <div class="col-md-3">
+                  <label for="form-owner-email" class="form-label small fw-bold">Correo Electrónico *</label>
+                  <input type="email" class="form-control" id="form-owner-email" required placeholder="dueno@ejemplo.com">
+                </div>
+
+                <div class="col-md-3">
+                  <label for="form-owner-phone" class="form-label small fw-bold">Teléfono de Contacto</label>
+                  <input type="text" class="form-control" id="form-owner-phone" placeholder="+54 9 3541 55-0303">
+                </div>
+
+                <div class="col-md-3">
+                  <label for="form-owner-whatsapp" class="form-label small fw-bold">WhatsApp (solo números) *</label>
+                  <input type="text" class="form-control" id="form-owner-whatsapp" required placeholder="5493541550303">
+                </div>
+
+                <!-- Checkboxes de canales activos -->
+                <div class="col-md-6">
+                  <label class="form-label small fw-bold d-block">Canales de Contacto Habilitados:</label>
+                  <div class="d-flex gap-3">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="check-canal-whatsapp" checked>
+                      <label class="form-check-label small" for="check-canal-whatsapp">
+                        <i class="bi bi-whatsapp text-success me-1"></i> WhatsApp
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="check-canal-email" checked>
+                      <label class="form-check-label small" for="check-canal-email">
+                        <i class="bi bi-envelope-at text-primary me-1"></i> Correo
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="check-canal-telefono">
+                      <label class="form-check-label small" for="check-canal-telefono">
+                        <i class="bi bi-telephone text-secondary me-1"></i> Llamada
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Vía Principal -->
+                <div class="col-md-6">
+                  <label class="form-label small fw-bold d-block">¿Cuál es la Vía Principal de Contacto? (Botón destacado):</label>
+                  <div class="d-flex gap-4">
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="viaPrincipalRadio" id="via-prin-wa" value="whatsapp" checked>
+                      <label class="form-check-label small fw-bold text-success" for="via-prin-wa">
+                        <i class="bi bi-whatsapp"></i> WhatsApp Directo
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="viaPrincipalRadio" id="via-prin-email" value="email">
+                      <label class="form-check-label small fw-bold text-primary" for="via-prin-email">
+                        <i class="bi bi-envelope"></i> Formulario de Correo
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- BOTONES DE ACCIÓN -->
+            <div class="modal-footer px-0 pb-0">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              <button type="submit" class="btn btn-success fw-bold px-4">
+                <i class="bi bi-cloud-check-fill me-1"></i> Guardar Inmueble en Tiempo Real
+              </button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: BACKUP DE CODIGO DATA.JS -->
+  <div class="modal fade" id="modalExportar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-dark text-white">
+          <h5 class="modal-title fw-bold">
+            <i class="bi bi-shield-check text-warning me-2"></i> Copia de Seguridad (Backup)
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <p class="small text-muted">
+            Tus datos ya se guardan automáticamente en la nube. Aquí puedes descargar una copia de seguridad en archivo <code>data.js</code> si lo deseas.
+          </p>
+
+          <div class="d-flex gap-2 mb-3">
+            <button class="btn btn-success fw-bold" onclick="descargarArchivoDataJS()">
+              <i class="bi bi-download me-1"></i> Descargar data.js
+            </button>
+            <button class="btn btn-outline-dark" onclick="copiarCodigoDataJS()">
+              <i class="bi bi-clipboard me-1"></i> Copiar Código
+            </button>
+          </div>
+
+          <textarea id="export-code-area" class="form-control font-monospace small bg-light" rows="12" readonly></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPTS EXTERNOS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- FIREBASE SDK COMPAT (CDN OFICIAL DE GOOGLE) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+  <!-- SCRIPTS DEL PROYECTO -->
+  <script src="js/data.js?v=2.1"></script>
+  <script src="js/firebase-config.js?v=2.1"></script>
+  <script src="js/admin.js?v=2.1"></script>
+
+</body>
+</html>
