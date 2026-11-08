@@ -9,13 +9,12 @@ const ADMIN_EMAIL_AUTORIZADO = "sergiovaldivia4@gmail.com";
 
 // Configuración de Firebase (reemplaza con tus credenciales de consola Firebase)
 const firebaseConfig = {
-  apiKey: "AIzaSyA0yKAAXbuXSQoUddWxzdZPPmwkDmZZLyQ",
-  authDomain: "cordoba-serrana-inmuebles.firebaseapp.com",
-  projectId: "cordoba-serrana-inmuebles",
-  storageBucket: "cordoba-serrana-inmuebles.firebasestorage.app",
-  messagingSenderId: "95745398989",
-  appId: "1:95745398989:web:0dcd17ca9b0c25ccbdf184",
-  measurementId: "G-TPN0V9BMGG"
+  apiKey: "TU_API_KEY",
+  authDomain: "TU_PROJECT_ID.firebaseapp.com",
+  projectId: "TU_PROJECT_ID",
+  storageBucket: "TU_PROJECT_ID.appspot.com",
+  messagingSenderId: "TU_MESSAGING_SENDER_ID",
+  appId: "TU_APP_ID"
 };
 
 // Variable para verificar si Firebase está configurado con credenciales reales
